@@ -1,0 +1,35 @@
+#cloud-config
+# DO NOT change the previous line. GCP VM requires it.
+timezone: UTC
+locale: en_US.UTF-8
+packages:
+  - locales
+package_update: true
+package_upgrade: true
+
+write_files:
+  - path: /root/init-node.sh
+    permissions: '0644'
+    owner: root:root
+    content: |
+      # TODO: content of ./init-node.sh
+
+  - path: /var/lib/zerotier-one/local.conf
+    #required to workaround https://www.danmanners.com/posts/2021-12-multi-cloud-k3s-and-booted-from-gcloud/
+    #also based on https://gist.github.com/jokester/2ae304016d8c25b09a68a9221f6c07c8
+    content: |
+      {
+        "settings": {
+          "interfacePrefixBlacklist": [ "veth","cni","docker","flannel","virbr" ]
+        }
+      }
+    permissions: '0644'
+    owner: root:root
+
+runcmd:
+  - bash /root/init-node.sh
+
+# reboot
+power_state:
+  delay: now
+  mode: reboot
