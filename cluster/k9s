@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -uex
-exec k9s --kubeconfig $(dirname "$0")/kube.yaml "$@"
+exec k9s --kubeconfig $(dirname "$0")/kubeconfig.yaml "$@"

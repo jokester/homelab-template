@@ -1,0 +1,33 @@
+# vim: ft=systemd
+# based on https://raw.githubusercontent.com/k3s-io/k3s/master/k3s.service
+# and https://www.danmanners.com/posts/2021-12-multi-cloud-k3s-and-booted-from-gcloud/
+[Unit]
+Description=Lightweight Kubernetes
+Documentation=https://k3s.io
+# We do not want to start k3s until ZeroTier is started and running
+After=network-online.target ZeroTier-one.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+ExecStartPre=-/sbin/modprobe br_netfilter
+ExecStartPre=-/sbin/modprobe overlay
+; ExecStartPre=/bin/sh -xc '! /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service 2>/dev/null'
+# ExecStart=/root/run-k3s-agent.sh
+ExecStart=/root/run-k3s-server.sh
+KillMode=process
+Delegate=yes
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+Restart=always
+RestartSec=5s
+
+[Install]
+# We do not want to start k3s until ZeroTier is started and running
+Requires=ZeroTier-one.service
+WantedBy=multi-user.target
