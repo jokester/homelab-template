@@ -1,0 +1,14 @@
+# deploy Grafana's Chart with k3s's builtin Helm controller
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: grafana
+  namespace: kube-system
+spec:
+  targetNamespace: grafana
+  createNamespace: true
+  repo: https://grafana.github.io/helm-charts
+  chart: k8s-monitoring # without REPO/
+  version: 0.13.1
+  valuesContent: |-
+    # TODO: Copy the 'values' part from Grafana Cloud: Home > Infrastructure > Kubernetes > Cluster configuration . Remember to remove the last EOF.
