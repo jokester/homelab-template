@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -uex
+exec kubectl --kubeconfig $(dirname "$0")/kubeconfig.yaml "$@"
